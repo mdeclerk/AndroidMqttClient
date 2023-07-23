@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/subscribeFragment"
+        android:icon="@drawable/ic_subscribe"
+        android:menuCategory="secondary"
+        android:title="Subscribe" />
+    <item
+        android:id="@+id/publishFragment"
+        android:icon="@drawable/ic_send"
+        android:menuCategory="secondary"
+        android:title="Publish" />
+    <item
+        android:id="@+id/messagesFragment"
+        android:icon="@drawable/ic_messages"
+        android:menuCategory="secondary"
+        android:title="Messages" />
+</menu>

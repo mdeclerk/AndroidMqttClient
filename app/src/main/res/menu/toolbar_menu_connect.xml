@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/default_broker_menu_item"
+        android:title="Default broker" />
+    <item
+        android:id="@+id/recent_brokers_menu_item"
+        android:title="Recent brokers" />
+</menu>

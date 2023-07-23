@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/connect_nav_graph"
+    app:startDestination="@id/connectFragment">
+
+    <fragment
+        android:id="@+id/connectFragment"
+        android:name="com.example.mqttclient.ui.connect.ConnectFragment"
+        android:label="Connect to MQTT broker"
+        tools:layout="@layout/fragment_connect" >
+        <action
+            android:id="@+id/action_connectFragment_to_recentsFragment"
+            app:destination="@id/recentsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/recentsFragment"
+        android:name="com.example.mqttclient.ui.connect.recents_brokers.RecentBrokersFragment"
+        android:label="Recent brokers"
+        tools:layout="@layout/fragment_recent_brokers"/>
+</navigation>
