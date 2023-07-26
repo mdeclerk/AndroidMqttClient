@@ -48,3 +48,10 @@ The App consists of major feature that make up basic functionality and minor fea
 - Bookmark previously subscribed topics for faster reuse ("Subscribed topics fragment")
 - Monitor incoming messages more easily with "Scroll to top" button ("Received messages fragment")
 - Display Mqtt error messages using Android Snackbar mechanism
+
+### 4. Screenshots
+
+<img src="doc/connect_screen.png" width="20%"/>
+<img src="doc/subscribe_screen.png" width="20%"/>
+<img src="doc/publish_screen.png" width="20%"/>
+<img src="doc/messages_screen.png" width="20%"/>
