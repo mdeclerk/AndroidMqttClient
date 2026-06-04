@@ -2,8 +2,13 @@ package com.example.mqttclient.ui.main
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -16,7 +21,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,6 +33,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mqttclient.R
+import com.example.mqttclient.ui.components.appTopAppBarColors
+import com.example.mqttclient.ui.components.appTopBarTextButtonColors
 import com.example.mqttclient.ui.main.publish_message.PublishMessageScreen
 import com.example.mqttclient.ui.main.publish_message.PublishMessageViewModel
 import com.example.mqttclient.ui.main.received_messages.ReceivedMessagesScreen
@@ -51,6 +60,7 @@ fun MainRoute(onDisconnected: () -> Unit) {
     val mainViewModel = koinViewModel<MainViewModel>()
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
+    var menuExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         mainViewModel.effects.collect { effect ->
@@ -73,17 +83,33 @@ fun MainRoute(onDisconnected: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = { Text(currentTab.title) },
+                colors = appTopAppBarColors(),
                 actions = {
+                    TextButton(
+                        onClick = { mainViewModel.disconnect() },
+                        colors = appTopBarTextButtonColors(),
+                    ) {
+                        Text("Disconnect")
+                    }
                     if (currentTab == MainTab.Messages) {
                         val messagesEntry = navController.getBackStackEntry(MainTab.Messages.route)
                         val messagesViewModel =
                             koinViewModel<ReceivedMessagesViewModel>(viewModelStoreOwner = messagesEntry)
-                        TextButton(onClick = messagesViewModel::deleteAllMessages) {
-                            Text("Delete all")
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
                         }
-                    }
-                    TextButton(onClick = { mainViewModel.disconnect() }) {
-                        Text("Disconnect")
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Delete all") },
+                                onClick = {
+                                    messagesViewModel.deleteAllMessages()
+                                    menuExpanded = false
+                                },
+                            )
+                        }
                     }
                 },
             )
