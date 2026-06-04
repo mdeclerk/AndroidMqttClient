@@ -1,18 +1,37 @@
 package com.example.mqttclient.ui.connect
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.example.mqttclient.data.api.MqttApiClient
 import com.example.mqttclient.data.local.recent_brokers.RecentBrokersDao
-import com.example.mqttclient.domain.RecentBroker
 import com.example.mqttclient.domain.MqttClient
+import com.example.mqttclient.domain.RecentBroker
 import com.example.mqttclient.domain.toRecentBrokerDTO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+data class ConnectUiState(
+    val host: String = "",
+    val port: String = "",
+    val clientId: String = "",
+    val isConnecting: Boolean = false,
+    val connectEnabled: Boolean = false,
+    val recentBrokers: List<RecentBroker> = emptyList(),
+)
+
+sealed interface ConnectEffect {
+    data object NavigateToMain : ConnectEffect
+    data class ShowError(val message: String) : ConnectEffect
+}
 
 class ConnectViewModel(
     private val brokerDao: RecentBrokersDao,
@@ -20,40 +39,88 @@ class ConnectViewModel(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
-    val host = MutableLiveData<String>()
-    val port = MutableLiveData<String>()
+    private val host = MutableStateFlow(MqttApiClient.DEFAULT_HOST)
+    private val port = MutableStateFlow(MqttApiClient.DEFAULT_PORT.toString())
 
-    val connectEnabled = MediatorLiveData<Boolean>()
+    private val _effects = Channel<ConnectEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
-    val clientId = mqttClient.clientId
-    val clientState = mqttClient.state
-    val isConnecting = mqttClient.state.map { it == MqttClient.State.Connecting }
-    val brokerList = mqttClient.recentBrokersList
+    val uiState: StateFlow<ConnectUiState> =
+        combine(
+            host,
+            port,
+            mqttClient.state.asFlow(),
+            mqttClient.recentBrokersList.asFlow(),
+        ) { host, port, state, brokers ->
+            ConnectUiState(
+                host = host,
+                port = port,
+                clientId = mqttClient.clientId,
+                isConnecting = state == MqttClient.State.Connecting,
+                connectEnabled = isConnectEnabled(host, port, state),
+                recentBrokers = brokers,
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ConnectUiState(
+                host = host.value,
+                port = port.value,
+                clientId = mqttClient.clientId,
+            ),
+        )
 
     init {
-        setDefaultHostAndPort()
         setLatestHostAndPort()
+        observeClientState()
+    }
 
-        connectEnabled.apply {
-            addSource(host) { value = isConnectEnabled() }
-            addSource(port) { value = isConnectEnabled() }
-            addSource(mqttClient.state) { value = isConnectEnabled() }
+    private fun observeClientState() {
+        viewModelScope.launch {
+            mqttClient.state.asFlow().collect { state ->
+                when (state) {
+                    is MqttClient.State.Connected -> _effects.send(ConnectEffect.NavigateToMain)
+                    is MqttClient.State.Error -> {
+                        _effects.send(ConnectEffect.ShowError(state.message))
+                        disconnect()
+                    }
+                    else -> Unit
+                }
+            }
         }
     }
 
-    private fun validateHostAndPort(): Boolean {
-        val hostName = host.value!!
-        val portNumber = port.value!!.toUShortOrNull()
-        return hostName.isNotEmpty() && !hostName[0].isDigit()
-                && portNumber != null && portNumber >= 0u && portNumber <= UShort.MAX_VALUE
+    private fun validateHostAndPort(host: String, port: String): Boolean {
+        val portNumber = port.toUShortOrNull()
+        return host.isNotEmpty() && !host[0].isDigit() &&
+            portNumber != null && portNumber >= 0u && portNumber <= UShort.MAX_VALUE
     }
 
-    private fun isConnectEnabled() =
-        validateHostAndPort() && mqttClient.state.value!! == MqttClient.State.Disconnected
+    private fun isConnectEnabled(host: String, port: String, state: MqttClient.State) =
+        validateHostAndPort(host, port) && state == MqttClient.State.Disconnected
+
+    fun onHostChange(value: String) {
+        host.value = value
+    }
+
+    fun onPortChange(value: String) {
+        port.value = value
+    }
+
+    fun applyBroker(broker: RecentBroker) {
+        host.value = broker.host
+        port.value = broker.port.toString()
+    }
+
+    fun clearHostAndPort() {
+        host.value = ""
+        port.value = ""
+    }
 
     fun connect() {
-        if (isConnectEnabled()) {
-            val recentBroker = RecentBroker(host.value!!, port.value!!.toInt())
+        val current = uiState.value
+        if (current.connectEnabled) {
+            val recentBroker = RecentBroker(current.host, current.port.toInt())
             viewModelScope.launch(ioDispatcher) {
                 mqttClient.connect(recentBroker)
             }
@@ -72,8 +139,8 @@ class ConnectViewModel(
     private fun setLatestHostAndPort() {
         viewModelScope.launch(ioDispatcher) {
             brokerDao.getLast()?.let {
-                host.postValue(it.host)
-                port.postValue(it.port.toString())
+                host.value = it.host
+                port.value = it.port.toString()
             }
         }
     }

@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.example.mqttclient.R
 import com.example.mqttclient.databinding.FragmentReceivedMessagesBinding
-import com.example.mqttclient.databinding.FragmentRecentBrokersBinding
 import org.koin.androidx.navigation.koinNavGraphViewModel
 
 class ReceivedMessagesFragment : Fragment(R.layout.fragment_received_messages), MenuProvider {
