@@ -1,54 +1,38 @@
 package com.example.mqttclient.ui.main.subscribed_topics
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mqttclient.R
-import com.example.mqttclient.databinding.AlertDialogSubscribeTopicBinding
-import com.example.mqttclient.databinding.FragmentSubscribedTopicsBinding
+import com.example.mqttclient.ui.theme.MqttClientTheme
 import org.koin.androidx.navigation.koinNavGraphViewModel
 
-class SubscribedTopicsFragment : Fragment(R.layout.fragment_subscribed_topics) {
-
-    private lateinit var binding: FragmentSubscribedTopicsBinding
+class SubscribedTopicsFragment : Fragment() {
 
     private val viewModel: SubscribedTopicsViewModel by koinNavGraphViewModel(R.id.main_nav_graph)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSubscribedTopicsBinding.bind(view)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.rvSubscribedTopics.adapter = SubscribedTopicsListAdapter(
-            SubscribedTopicsListAdapter.ClickListener {
-                if (it.isSubscribed) {
-                    viewModel.unsubscribeTopic(it)
-                } else {
-                    viewModel.subscribeTopic(it)
-                }
-            },
-            SubscribedTopicsListAdapter.ClickListener {
-                viewModel.unsubscribeTopic(it)
-                viewModel.deleteTopicFromDb(it)
-            }
-        )
-        binding.fabSubscribeTopic.setOnClickListener {
-            val binding = AlertDialogSubscribeTopicBinding.inflate(layoutInflater)
-            binding.viewModel = viewModel
-
-            val builder = AlertDialog.Builder(requireContext())
-            with(builder) {
-                setTitle("Subscribe to topic")
-                setMessage("e.g. /testtopic/#")
-                setView(binding.root)
-                setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                    viewModel.createNewTopicWithTopicName()
-                })
-                setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
-                })
-                show()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            MqttClientTheme {
+                val state by viewModel.uiState.collectAsStateWithLifecycle()
+                SubscribedTopicsScreen(
+                    state = state,
+                    onToggle = viewModel::toggleSubscription,
+                    onDelete = viewModel::deleteTopic,
+                    onNewTopicNameChange = viewModel::onNewTopicNameChange,
+                    onCreateTopic = viewModel::createNewTopic,
+                )
             }
         }
     }
