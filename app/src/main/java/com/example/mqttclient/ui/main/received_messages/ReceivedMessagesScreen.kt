@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mqttclient.R
 import com.example.mqttclient.domain.MqttMessage
 import com.example.mqttclient.ui.theme.MqttClientTheme
@@ -55,7 +55,7 @@ fun ReceivedMessagesScreen(
         if (state.messages.isEmpty()) {
             Text(
                 text = "No messages",
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.align(Alignment.Center),
             )
         } else {
@@ -97,13 +97,19 @@ private fun MessageRow(message: MqttMessage) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(text = message.topic, fontSize = 14.sp)
+            Text(
+                text = message.topic,
+                style = MaterialTheme.typography.labelLarge,
+            )
             @Suppress("DEPRECATION")
-            Text(text = message.timestamp.toLocaleString(), fontSize = 14.sp)
+            Text(
+                text = message.timestamp.toLocaleString(),
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
         Text(
             text = message.payload,
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
     }

@@ -27,10 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mqttclient.R
 import com.example.mqttclient.domain.SubscribedTopic
 import com.example.mqttclient.ui.theme.MqttClientTheme
@@ -50,7 +48,7 @@ fun SubscribedTopicsScreen(
         if (state.topics.isEmpty()) {
             Text(
                 text = "No topics",
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.align(Alignment.Center),
             )
         } else {
@@ -105,7 +103,7 @@ private fun TopicRow(
         Checkbox(checked = topic.isSubscribed, onCheckedChange = { onToggle() })
         Text(
             text = topic.name,
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 8.dp),
@@ -132,10 +130,14 @@ private fun SubscribeDialog(
         title = { Text("Subscribe to topic") },
         text = {
             Column {
-                Text("e.g. /testtopic/#")
+                Text(
+                    text = "e.g. /testtopic/#",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
                 OutlinedTextField(
                     value = topicName,
                     onValueChange = onNameChange,
+                    label = { Text("Topic filter") },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()

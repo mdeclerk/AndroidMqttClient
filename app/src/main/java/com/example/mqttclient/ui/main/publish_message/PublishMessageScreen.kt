@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mqttclient.ui.theme.MqttClientTheme
 
 @Composable
@@ -47,28 +46,40 @@ fun PublishMessageScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp, vertical = 16.dp),
     ) {
-        SectionLabel("Topic:")
         OutlinedTextField(
             value = state.topic,
             onValueChange = onTopicChange,
+            label = { Text("Topic") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
 
-        SectionLabel("Quality of service (QoS):", Modifier.padding(top = 16.dp))
-        QosDropdown(qos = state.qos, onQosChange = onQosChange)
+        QosDropdown(
+            qos = state.qos,
+            onQosChange = onQosChange,
+            modifier = Modifier.padding(top = 16.dp),
+        )
 
-        SectionLabel("Retain message on broker:", Modifier.padding(top = 16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "Retain message on broker",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(top = 16.dp),
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 4.dp),
+        ) {
             Checkbox(checked = state.retain, onCheckedChange = onRetainChange)
             Text("Retain")
         }
 
-        SectionLabel("Message:", Modifier.padding(top = 8.dp))
         OutlinedTextField(
             value = state.payload,
             onValueChange = onPayloadChange,
-            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Message") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
         )
 
         Button(
@@ -83,24 +94,25 @@ fun PublishMessageScreen(
     }
 }
 
-@Composable
-private fun SectionLabel(text: String, modifier: Modifier = Modifier) {
-    Text(text = text, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = modifier)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun QosDropdown(qos: String, onQosChange: (String) -> Unit) {
+private fun QosDropdown(
+    qos: String,
+    onQosChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val options = listOf("0", "1", "2")
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
+        modifier = modifier,
     ) {
         OutlinedTextField(
             value = qos,
             onValueChange = {},
+            label = { Text("Quality of service (QoS)") },
             readOnly = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },

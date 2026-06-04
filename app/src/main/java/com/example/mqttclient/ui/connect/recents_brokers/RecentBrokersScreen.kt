@@ -18,10 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mqttclient.R
 import com.example.mqttclient.domain.RecentBroker
 import com.example.mqttclient.ui.theme.MqttClientTheme
@@ -35,7 +33,10 @@ fun RecentBrokersScreen(
 ) {
     if (brokers.isEmpty()) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "No recent brokers", fontSize = 24.sp)
+            Text(
+                text = "No recent brokers",
+                style = MaterialTheme.typography.headlineSmall,
+            )
         }
     } else {
         LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -65,9 +66,15 @@ private fun RecentBrokerRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = broker.toString(), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = broker.toString(),
+                style = MaterialTheme.typography.titleMedium,
+            )
             @Suppress("DEPRECATION")
-            Text(text = broker.timestamp.toLocaleString(), fontSize = 14.sp)
+            Text(
+                text = broker.timestamp.toLocaleString(),
+                style = MaterialTheme.typography.bodySmall,
+            )
         }
         IconButton(onClick = onDelete) {
             Icon(
