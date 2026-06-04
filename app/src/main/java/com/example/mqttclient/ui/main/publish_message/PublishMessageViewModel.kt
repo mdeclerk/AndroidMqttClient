@@ -35,8 +35,12 @@ class PublishMessageViewModel(private val mqtt: MqttClient) : ViewModel() {
 
     fun send() {
         val state = _uiState.value
-        // NOTE: preserves the original behaviour of publishing with default qos/retain.
-        val msg = MqttMessage(state.topic, state.payload)
+        val msg = MqttMessage(
+            topic = state.topic,
+            payload = state.payload,
+            retain = state.retain,
+            qos = state.qos.toIntOrNull() ?: 0,
+        )
         mqtt.publish(msg)
     }
 }

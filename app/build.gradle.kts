@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.androidx.navigation.safeargs)
-    alias(libs.plugins.android.legacy.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
 }
@@ -42,21 +40,14 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
         compose = true
     }
 }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
 
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
-
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-
+    // Material Components retained for the XML application/window theme only.
     implementation(libs.material)
 
     implementation(platform(libs.compose.bom))
@@ -64,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -74,7 +66,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose.navigation)
 
     implementation(libs.hivemq.mqtt.client)
 
