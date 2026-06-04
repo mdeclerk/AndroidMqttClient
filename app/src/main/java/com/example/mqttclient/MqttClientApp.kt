@@ -11,7 +11,7 @@ import com.example.mqttclient.ui.main.received_messages.ReceivedMessagesViewMode
 import com.example.mqttclient.ui.main.publish_message.PublishMessageViewModel
 import com.example.mqttclient.ui.main.subscribed_topics.SubscribedTopicsViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
