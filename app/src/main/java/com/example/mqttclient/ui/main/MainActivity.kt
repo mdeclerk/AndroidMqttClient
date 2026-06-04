@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -34,6 +39,16 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.main_toolbar)
         setSupportActionBar(toolbar)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+
+        // The Toolbar must dodge the status bar / cutout; BottomNavigationView (a
+        // Material NavigationBarView) applies the bottom system-bar inset itself.
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(left = bars.left, top = bars.top, right = bars.right)
+            insets
+        }
 
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottom_nav_bar)
         NavigationUI.setupWithNavController(bottomNavBar, navController)
