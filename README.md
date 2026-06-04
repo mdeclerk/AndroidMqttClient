@@ -1,57 +1,54 @@
-# Android Mqtt Client App
+# Android MQTT Client App
 
-### 1. Introduction
+A lightweight mobile [MQTT](https://mqtt.org) client for Android. Useful if you want to:
 
-This App is a mobile lightweight Mqtt client that implements the Mqtt protocol. More information on the protocol can be found here: https://mqtt.org
-
-For testing the App functionality you can use the HiveMq online service: https://www.hivemq.com/demos/websocket-client/?
-
-The App might be useful to anybody who wants to
-- explore and learn how the Mqtt protocol works
-- debug and test existing Mqtt infrastructure
+- explore and learn how the MQTT protocol works
+- debug and test existing MQTT infrastructure
 - have a simple communication with IoT devices
 
-### 2. Getting started
+For testing, pair the app with the [HiveMQ WebSocket client](https://www.hivemq.com/demos/websocket-client/?).
 
-To see the App in action perform the following steps: 
+### 1. Getting started
 
-#### 2.2 Run the app
+#### 1.1 Run the app
 
-1. Check if internet is available to device or emulator
-2. Run app and connect to broker
-   - For testing use predefined "Default broker" menu option to quickly connect to the HiveMq online broker
-3. Subscribe to topic
-   - For testing use predefined "testtopic/#" as default choice
-4. Send custom messages and monitor incoming messages
-   - For testing leave all settings to thier predefined values
+1. Make sure the device or emulator has internet access.
+2. Run the app and connect to a broker — use the **Default broker** option to connect to the HiveMQ public broker instantly.
+3. Subscribe to a topic — `testtopic/#` is offered as a default.
+4. Publish custom messages and watch incoming messages arrive.
 
-#### 2.2 Test client as App counterpart
+#### 1.2 Test against a counterpart
 
-1. Navigate to online Mqtt broker: https://www.hivemq.com/demos/websocket-client/?
-2. Setup a simple test client and test communication with App
+1. Open the [HiveMQ WebSocket client](https://www.hivemq.com/demos/websocket-client/?).
+2. Set up a simple test client and exchange messages with the app.
 
-### 3. Features
+### 2. Features
 
-The App consists of major feature that make up basic functionality and minor feature to improve the User Exoerience
+**Core**
+- **Connect** to an MQTT broker
+- **Subscribe** to topics
+- **Publish** custom messages
+- **Receive** and monitor incoming messages live
 
-#### 3.1 Major features
+**Quality of life**
+- Bookmark recent brokers for one-tap reconnect
+- Bookmark previously subscribed topics for quick reuse
+- "Scroll to top" button on the received-messages list
+- MQTT errors surfaced via Snackbars
 
-- Connecting to a broker ("Connect activity")
-- Communicating with a connected broker ("Main activity")
-  - Subscribe to a topic ("Subscribed topics fragment")
-  - Publish custom messages ("Publish message fragment")
-  - Monitor incoming messages ("Received messages fragment")
+### 3. Tech stack
 
-#### 3.2 Minor features
-
-- Bookmark previous connections for faster reuse ("Recent brokers fragment")
-- Bookmark previously subscribed topics for faster reuse ("Subscribed topics fragment")
-- Monitor incoming messages more easily with "Scroll to top" button ("Received messages fragment")
-- Display Mqtt error messages using Android Snackbar mechanism
+- **Language:** Kotlin (JDK 17)
+- **UI:** Jetpack Compose + Material 3, single-Activity with Navigation-Compose
+- **Architecture:** MVVM — ViewModels + StateFlow, layered `data` / `domain` / `ui`
+- **DI:** Koin
+- **Persistence:** Room (recent brokers, subscribed topics)
+- **MQTT:** HiveMQ MQTT client
+- **SDK:** min 24, target 36
 
 ### 4. Screenshots
 
-<img src="doc/connect_screen.png" width="20%"/>
-<img src="doc/subscribe_screen.png" width="20%"/>
-<img src="doc/publish_screen.png" width="20%"/>
-<img src="doc/messages_screen.png" width="20%"/>
+<img src="doc/connect_screen.png" alt="Connect to broker screen" width="220"/>
+<img src="doc/subscribe_screen.png" alt="Subscribe to topics screen" width="220"/>
+<img src="doc/publish_screen.png" alt="Publish message screen" width="220"/>
+<img src="doc/messages_screen.png" alt="Received messages screen" width="220"/>
