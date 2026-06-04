@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "MqttClient"
-include ':app'
+include(":app")
