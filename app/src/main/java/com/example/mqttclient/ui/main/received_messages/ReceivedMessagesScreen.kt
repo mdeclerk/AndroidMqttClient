@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mqttclient.R
@@ -54,7 +55,7 @@ fun ReceivedMessagesScreen(
     Box(modifier = modifier.fillMaxSize()) {
         if (state.messages.isEmpty()) {
             Text(
-                text = "No messages",
+                text = stringResource(R.string.messages_empty),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -80,7 +81,10 @@ fun ReceivedMessagesScreen(
                     painter = painterResource(R.drawable.ic_arrow_upward),
                     contentDescription = null,
                 )
-                Text(text = "Scroll to top", modifier = Modifier.padding(start = 8.dp))
+                Text(
+                    text = stringResource(R.string.messages_scroll_to_top),
+                    modifier = Modifier.padding(start = 8.dp),
+                )
             }
         }
     }

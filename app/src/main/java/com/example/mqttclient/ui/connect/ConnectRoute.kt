@@ -21,7 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.mqttclient.R
 import com.example.mqttclient.ui.components.appTopAppBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +36,7 @@ fun ConnectRoute(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var menuExpanded by remember { mutableStateOf(false) }
+    val dismissLabel = stringResource(R.string.all_dismiss)
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
@@ -41,7 +44,7 @@ fun ConnectRoute(
                 ConnectEffect.NavigateToMain -> onConnected()
                 is ConnectEffect.ShowError -> snackbarHostState.showSnackbar(
                     message = effect.message,
-                    actionLabel = "Dismiss",
+                    actionLabel = dismissLabel,
                     duration = SnackbarDuration.Indefinite,
                 )
             }
@@ -51,25 +54,28 @@ fun ConnectRoute(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Connect to MQTT broker") },
+                title = { Text(stringResource(R.string.connect_title)) },
                 colors = appTopAppBarColors(),
                 actions = {
                     IconButton(onClick = { menuExpanded = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.all_more_options_cd),
+                        )
                     }
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Default broker") },
+                            text = { Text(stringResource(R.string.connect_default_broker)) },
                             onClick = {
                                 viewModel.setDefaultHostAndPort()
                                 menuExpanded = false
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text("Recent brokers") },
+                            text = { Text(stringResource(R.string.all_recent_brokers)) },
                             onClick = {
                                 menuExpanded = false
                                 onNavigateToRecents()

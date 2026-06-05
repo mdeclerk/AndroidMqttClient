@@ -25,9 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mqttclient.R
 import com.example.mqttclient.ui.theme.MqttClientTheme
 
 @Composable
@@ -49,7 +51,7 @@ fun PublishMessageScreen(
         OutlinedTextField(
             value = state.topic,
             onValueChange = onTopicChange,
-            label = { Text("Topic") },
+            label = { Text(stringResource(R.string.publish_topic)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -61,7 +63,7 @@ fun PublishMessageScreen(
         )
 
         Text(
-            text = "Retain message on broker",
+            text = stringResource(R.string.publish_retain_label),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(top = 16.dp),
         )
@@ -70,13 +72,13 @@ fun PublishMessageScreen(
             modifier = Modifier.padding(top = 4.dp),
         ) {
             Checkbox(checked = state.retain, onCheckedChange = onRetainChange)
-            Text("Retain")
+            Text(stringResource(R.string.publish_retain))
         }
 
         OutlinedTextField(
             value = state.payload,
             onValueChange = onPayloadChange,
-            label = { Text("Message") },
+            label = { Text(stringResource(R.string.publish_message)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
@@ -89,7 +91,7 @@ fun PublishMessageScreen(
                 .fillMaxWidth()
                 .padding(top = 24.dp),
         ) {
-            Text("Send")
+            Text(stringResource(R.string.publish_send))
         }
     }
 }
@@ -112,7 +114,7 @@ private fun QosDropdown(
         OutlinedTextField(
             value = qos,
             onValueChange = {},
-            label = { Text("Quality of service (QoS)") },
+            label = { Text(stringResource(R.string.publish_qos)) },
             readOnly = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },

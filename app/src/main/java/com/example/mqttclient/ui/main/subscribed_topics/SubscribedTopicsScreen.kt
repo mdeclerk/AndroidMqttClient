@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mqttclient.R
@@ -47,7 +48,7 @@ fun SubscribedTopicsScreen(
     Box(modifier = modifier.fillMaxSize()) {
         if (state.topics.isEmpty()) {
             Text(
-                text = "No topics",
+                text = stringResource(R.string.subscribe_empty),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -70,7 +71,10 @@ fun SubscribedTopicsScreen(
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
         ) {
-            Icon(painterResource(R.drawable.ic_add), contentDescription = "Subscribe to topic")
+            Icon(
+                painterResource(R.drawable.ic_add),
+                contentDescription = stringResource(R.string.main_subscribe_title),
+            )
         }
     }
 
@@ -111,7 +115,7 @@ private fun TopicRow(
         IconButton(onClick = onDelete) {
             Icon(
                 painter = painterResource(R.drawable.ic_delete),
-                contentDescription = "Delete topic",
+                contentDescription = stringResource(R.string.subscribe_delete_topic_cd),
                 tint = MaterialTheme.colorScheme.error,
             )
         }
@@ -127,17 +131,17 @@ private fun SubscribeDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Subscribe to topic") },
+        title = { Text(stringResource(R.string.main_subscribe_title)) },
         text = {
             Column {
                 Text(
-                    text = "e.g. /testtopic/#",
+                    text = stringResource(R.string.subscribe_dialog_hint),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 OutlinedTextField(
                     value = topicName,
                     onValueChange = onNameChange,
-                    label = { Text("Topic filter") },
+                    label = { Text(stringResource(R.string.subscribe_topic_filter)) },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -145,8 +149,8 @@ private fun SubscribeDialog(
                 )
             }
         },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("OK") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.all_ok)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.all_cancel)) } },
     )
 }
 

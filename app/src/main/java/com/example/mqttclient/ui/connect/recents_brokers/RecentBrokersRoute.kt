@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.mqttclient.R
 import com.example.mqttclient.ui.components.appTopAppBarColors
 import com.example.mqttclient.ui.connect.ConnectViewModel
 
@@ -34,23 +36,29 @@ fun RecentBrokersRoute(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Recent brokers") },
+                title = { Text(stringResource(R.string.all_recent_brokers)) },
                 colors = appTopAppBarColors(),
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.recents_back_cd),
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { menuExpanded = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.all_more_options_cd),
+                        )
                     }
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Delete all") },
+                            text = { Text(stringResource(R.string.all_delete_all)) },
                             onClick = {
                                 menuExpanded = false
                                 viewModel.deleteAllRecentBrokers()

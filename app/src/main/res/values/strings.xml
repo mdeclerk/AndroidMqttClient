@@ -1,5 +1,51 @@
 <resources>
     <string name="app_name">Mqtt Client</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- App-wide -->
+    <string name="all_more_options_cd">More options</string>
+    <string name="all_dismiss">Dismiss</string>
+    <string name="all_delete_all">Delete all</string>
+    <string name="all_recent_brokers">Recent brokers</string>
+    <string name="all_ok">OK</string>
+    <string name="all_cancel">Cancel</string>
+
+    <!-- Connect -->
+    <string name="connect_title">Connect to MQTT broker</string>
+    <string name="connect_hostname">Hostname</string>
+    <string name="connect_port">Port number</string>
+    <string name="connect_client_id">Client Id: %1$s</string>
+    <string name="connect_action_connect">Connect</string>
+    <string name="connect_default_broker">Default broker</string>
+
+    <!-- Recent brokers -->
+    <string name="recents_back_cd">Back</string>
+    <string name="recents_delete_broker_cd">Delete broker</string>
+    <string name="recents_empty">No recent brokers</string>
+
+    <!-- Main scaffold -->
+    <string name="main_subscribe_label">Subscribe</string>
+    <string name="main_subscribe_title">Subscribe to topic</string>
+    <string name="main_publish_label">Publish</string>
+    <string name="main_publish_title">Send message</string>
+    <string name="main_messages_label">Messages</string>
+    <string name="main_messages_title">Received messages</string>
+    <string name="main_disconnect">Disconnect</string>
+
+    <!-- Subscribe topics -->
+    <string name="subscribe_empty">No topics</string>
+    <string name="subscribe_delete_topic_cd">Delete topic</string>
+    <string name="subscribe_dialog_hint">e.g. /testtopic/#</string>
+    <string name="subscribe_topic_filter">Topic filter</string>
+
+    <!-- Publish -->
+    <string name="publish_topic">Topic</string>
+    <string name="publish_qos">Quality of service (QoS)</string>
+    <string name="publish_retain_label">Retain message on broker</string>
+    <string name="publish_retain">Retain</string>
+    <string name="publish_message">Message</string>
+    <string name="publish_send">Send</string>
+
+    <!-- Received messages -->
+    <string name="messages_empty">No messages</string>
+    <string name="messages_scroll_to_top">Scroll to top</string>
 </resources>

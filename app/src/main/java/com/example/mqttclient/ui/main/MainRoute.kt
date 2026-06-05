@@ -1,6 +1,7 @@
 package com.example.mqttclient.ui.main
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -52,13 +54,13 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private enum class MainTab(
     val route: String,
-    val label: String,
-    val title: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val titleRes: Int,
     @param:DrawableRes val iconRes: Int,
 ) {
-    Subscribe("subscribe", "Subscribe", "Subscribe to topic", R.drawable.ic_subscribe),
-    Publish("publish", "Publish", "Send message", R.drawable.ic_send),
-    Messages("messages", "Messages", "Received messages", R.drawable.ic_messages),
+    Subscribe("subscribe", R.string.main_subscribe_label, R.string.main_subscribe_title, R.drawable.ic_subscribe),
+    Publish("publish", R.string.main_publish_label, R.string.main_publish_title, R.drawable.ic_send),
+    Messages("messages", R.string.main_messages_label, R.string.main_messages_title, R.drawable.ic_messages),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +70,7 @@ fun MainRoute(onDisconnected: () -> Unit) {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     var menuExpanded by remember { mutableStateOf(false) }
+    val dismissLabel = stringResource(R.string.all_dismiss)
 
     LaunchedEffect(Unit) {
         mainViewModel.effects.collect { effect ->
@@ -75,7 +78,7 @@ fun MainRoute(onDisconnected: () -> Unit) {
                 MainEffect.NavigateToConnect -> onDisconnected()
                 is MainEffect.ShowError -> snackbarHostState.showSnackbar(
                     message = effect.message,
-                    actionLabel = "Dismiss",
+                    actionLabel = dismissLabel,
                     duration = SnackbarDuration.Indefinite,
                 )
             }
@@ -92,28 +95,31 @@ fun MainRoute(onDisconnected: () -> Unit) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(currentTab.title) },
+                    title = { Text(stringResource(currentTab.titleRes)) },
                     colors = appTopAppBarColors(),
                     actions = {
                         TextButton(
                             onClick = { mainViewModel.disconnect() },
                             colors = appTopBarTextButtonColors(),
                         ) {
-                            Text("Disconnect")
+                            Text(stringResource(R.string.main_disconnect))
                         }
                         if (currentTab == MainTab.Messages) {
                             val messagesEntry = navController.getBackStackEntry(MainTab.Messages.route)
                             val messagesViewModel =
                                 koinViewModel<ReceivedMessagesViewModel>(viewModelStoreOwner = messagesEntry)
                             IconButton(onClick = { menuExpanded = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    contentDescription = stringResource(R.string.all_more_options_cd),
+                                )
                             }
                             DropdownMenu(
                                 expanded = menuExpanded,
                                 onDismissRequest = { menuExpanded = false },
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text("Delete all") },
+                                    text = { Text(stringResource(R.string.all_delete_all)) },
                                     onClick = {
                                         messagesViewModel.deleteAllMessages()
                                         menuExpanded = false
@@ -158,7 +164,7 @@ private fun MainNavigationBar(
                 selected = currentTab == tab,
                 onClick = { onTabClick(tab) },
                 icon = { Icon(painterResource(tab.iconRes), contentDescription = null) },
-                label = { Text(tab.label) },
+                label = { Text(stringResource(tab.labelRes)) },
             )
         }
     }
@@ -175,7 +181,7 @@ private fun MainNavigationRail(
                 selected = currentTab == tab,
                 onClick = { onTabClick(tab) },
                 icon = { Icon(painterResource(tab.iconRes), contentDescription = null) },
-                label = { Text(tab.label) },
+                label = { Text(stringResource(tab.labelRes)) },
             )
         }
     }

@@ -14,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mqttclient.R
 import com.example.mqttclient.ui.theme.MqttClientTheme
 
 @Composable
@@ -37,14 +39,14 @@ fun ConnectScreen(
             OutlinedTextField(
                 value = state.host,
                 onValueChange = onHostChange,
-                label = { Text("Hostname") },
+                label = { Text(stringResource(R.string.connect_hostname)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
                 value = state.port,
                 onValueChange = onPortChange,
-                label = { Text("Port number") },
+                label = { Text(stringResource(R.string.connect_port)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
@@ -52,7 +54,7 @@ fun ConnectScreen(
                     .padding(top = 8.dp),
             )
             Text(
-                text = "Client Id: ${state.clientId}",
+                text = stringResource(R.string.connect_client_id, state.clientId),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 8.dp),
             )
@@ -63,7 +65,7 @@ fun ConnectScreen(
                     .fillMaxWidth()
                     .padding(top = 24.dp),
             ) {
-                Text("Connect")
+                Text(stringResource(R.string.connect_action_connect))
             }
         }
 
