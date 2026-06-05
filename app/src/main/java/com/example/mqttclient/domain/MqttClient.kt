@@ -36,6 +36,8 @@ class MqttClient(
         it.toSubscribedTopicList()
     }
 
+    private val receivedMessagesLock = Any()
+    private var receivedMessages = emptyList<MqttMessage>()
     private val _receivedMessagesList = MutableLiveData<List<MqttMessage>>(emptyList())
     val receivedMessagesList: LiveData<List<MqttMessage>> = _receivedMessagesList
 
@@ -50,8 +52,10 @@ class MqttClient(
 
         mqtt.setOnMessageReceiveListener {
             val msg = it.toMqttMessage()
-            val lst = _receivedMessagesList.value!!
-            _receivedMessagesList.postValue(listOf(msg) + lst)
+            synchronized(receivedMessagesLock) {
+                receivedMessages = listOf(msg) + receivedMessages
+                _receivedMessagesList.postValue(receivedMessages)
+            }
         }
 
         mqtt.setOnErrorListener {
@@ -109,5 +113,8 @@ class MqttClient(
 
     fun publish(mqttMessage: MqttMessage) = mqtt.publish(mqttMessage.toMqttApiMessage())
 
-    fun clearReceivedMessagesList() = _receivedMessagesList.postValue(emptyList())
+    fun clearReceivedMessagesList() = synchronized(receivedMessagesLock) {
+        receivedMessages = emptyList()
+        _receivedMessagesList.postValue(emptyList())
+    }
 }
