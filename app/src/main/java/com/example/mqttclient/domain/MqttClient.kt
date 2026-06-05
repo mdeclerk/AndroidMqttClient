@@ -25,8 +25,17 @@ class MqttClient(
         data class Error(val message: String) : State()
     }
 
+    @Volatile
+    private var currentState: State = State.Disconnected
     private val _state = MutableLiveData<State>(State.Disconnected)
     val state: LiveData<State> = _state
+
+    // Updates the volatile snapshot synchronously (readable from any thread) and
+    // mirrors it to LiveData for observers.
+    private fun setState(newState: State) {
+        currentState = newState
+        _state.postValue(newState)
+    }
 
     val recentBrokersList = recentBrokersDao.getAllAsLiveData().map {
         it.toRecentBrokerList()
@@ -43,11 +52,11 @@ class MqttClient(
 
     init {
         mqtt.setOnConnectedListener {
-            _state.postValue(State.Connected)
+            setState(State.Connected)
         }
 
         mqtt.setOnDisconnectedListener {
-            _state.postValue(State.Disconnected)
+            setState(State.Disconnected)
         }
 
         mqtt.setOnMessageReceiveListener {
@@ -59,15 +68,15 @@ class MqttClient(
         }
 
         mqtt.setOnErrorListener {
-            _state.postValue(State.Error(it))
+            setState(State.Error(it))
         }
     }
 
     suspend fun connect(recentBroker: RecentBroker) {
-        if (_state.value!! == State.Connected || _state.value!! == State.Connecting) {
+        if (currentState == State.Connected || currentState == State.Connecting) {
             return
         }
-        _state.postValue(State.Connecting)
+        setState(State.Connecting)
 
         mqtt.connect(recentBroker.host, recentBroker.port)
         if (mqtt.isConnected) {
