@@ -92,8 +92,7 @@ class ConnectViewModel(
 
     private fun validateHostAndPort(host: String, port: String): Boolean {
         val portNumber = port.toUShortOrNull()
-        return host.isNotEmpty() && !host[0].isDigit() &&
-            portNumber != null && portNumber >= 0u && portNumber <= UShort.MAX_VALUE
+        return host.isNotBlank() && portNumber != null && portNumber > 0u
     }
 
     private fun isConnectEnabled(host: String, port: String, state: MqttClient.State) =
