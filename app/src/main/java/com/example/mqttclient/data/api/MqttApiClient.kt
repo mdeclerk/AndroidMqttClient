@@ -22,8 +22,10 @@ class MqttApiClient(
 
     private lateinit var client: Mqtt5BlockingClient
 
+    @Volatile
     private var isConnecting = false
 
+    @Volatile
     var isConnected = false
         private set
 
