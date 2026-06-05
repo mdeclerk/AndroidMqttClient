@@ -12,10 +12,23 @@ android {
         applicationId = "com.example.mqttclient"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = (System.getenv("VERSION_CODE") ?: "1").toInt()
+        versionName = System.getenv("VERSION_NAME") ?: "dev"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            val keystore = System.getenv("SIGNING_KEYSTORE_FILE")
+            if (keystore != null) {
+                val password = System.getenv("SIGNING_PASSWORD")
+                storeFile = file(keystore)
+                storePassword = password
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = password   // same password for store and key
+            }
+        }
     }
 
     buildTypes {
@@ -25,6 +38,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig =
+                if (System.getenv("SIGNING_KEYSTORE_FILE") != null)
+                    signingConfigs.getByName("release")
+                else
+                    signingConfigs.getByName("debug")
         }
     }
 

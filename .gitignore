@@ -5,3 +5,5 @@
 /.kotlin/
 /build/
 /local.properties
+*.jks
+*.keystore
