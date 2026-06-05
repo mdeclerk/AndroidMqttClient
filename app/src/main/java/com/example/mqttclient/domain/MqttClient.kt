@@ -78,9 +78,9 @@ class MqttClient(
                     mqtt.subscribe(it.name)
                 }
             }
-        }
 
-        recentBrokersDao.insert(recentBroker.toRecentBrokerDTO())
+            recentBrokersDao.insert(recentBroker.toRecentBrokerDTO())
+        }
     }
 
     fun disconnect() = mqtt.disconnect()
