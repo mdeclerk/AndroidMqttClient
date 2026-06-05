@@ -51,6 +51,7 @@ class SubscribedTopicsViewModel(
             viewModelScope.launch(ioDispatcher) {
                 mqtt.subscribe(name)
             }
+            newTopicName.value = SubscribedTopicsUiState.DEFAULT_TOPIC_NAME
         }
     }
 
