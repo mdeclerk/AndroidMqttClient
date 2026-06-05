@@ -61,7 +61,12 @@ fun ReceivedMessagesScreen(
             )
         } else {
             LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                items(state.messages.size) { index ->
+                // Messages are prepended, so the reverse index (arrival order) is a
+                // stable key: existing rows keep their identity when a new one arrives.
+                items(
+                    count = state.messages.size,
+                    key = { index -> state.messages.size - 1 - index },
+                ) { index ->
                     MessageRow(state.messages[index])
                     HorizontalDivider()
                 }
