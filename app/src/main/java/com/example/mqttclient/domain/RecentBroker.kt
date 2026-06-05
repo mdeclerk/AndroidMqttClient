@@ -1,12 +1,11 @@
 package com.example.mqttclient.domain
 
 import com.example.mqttclient.data.local.recent_brokers.RecentBrokerDto
-import java.sql.Timestamp
 
 data class RecentBroker(
     val host: String,
     val port: Int,
-    val timestamp: Timestamp = Timestamp(System.currentTimeMillis()),
+    val timestamp: Long = System.currentTimeMillis(),
 ) {
     override fun toString() = "${host}:${port}"
 }
@@ -14,7 +13,7 @@ data class RecentBroker(
 fun RecentBrokerDto.toRecentBroker() = RecentBroker(
     host = host,
     port = port,
-    timestamp = Timestamp(timestamp),
+    timestamp = timestamp,
 )
 
 fun List<RecentBrokerDto>.toRecentBrokerList() = map {
@@ -24,5 +23,5 @@ fun List<RecentBrokerDto>.toRecentBrokerList() = map {
 fun RecentBroker.toRecentBrokerDTO() = RecentBrokerDto(
     host = host,
     port = port,
-    timestamp = timestamp.time
+    timestamp = timestamp
 )

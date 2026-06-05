@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mqttclient.R
 import com.example.mqttclient.domain.RecentBroker
 import com.example.mqttclient.ui.theme.MqttClientTheme
+import com.example.mqttclient.ui.util.formatTimestamp
 
 @Composable
 fun RecentBrokersScreen(
@@ -71,9 +72,8 @@ private fun RecentBrokerRow(
                 text = broker.toString(),
                 style = MaterialTheme.typography.titleMedium,
             )
-            @Suppress("DEPRECATION")
             Text(
-                text = broker.timestamp.toLocaleString(),
+                text = formatTimestamp(broker.timestamp),
                 style = MaterialTheme.typography.bodySmall,
             )
         }

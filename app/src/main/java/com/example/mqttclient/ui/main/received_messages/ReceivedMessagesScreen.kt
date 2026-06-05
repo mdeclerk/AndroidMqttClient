@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mqttclient.R
 import com.example.mqttclient.domain.MqttMessage
 import com.example.mqttclient.ui.theme.MqttClientTheme
+import com.example.mqttclient.ui.util.formatTimestamp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -110,9 +111,8 @@ private fun MessageRow(message: MqttMessage) {
                 text = message.topic,
                 style = MaterialTheme.typography.labelLarge,
             )
-            @Suppress("DEPRECATION")
             Text(
-                text = message.timestamp.toLocaleString(),
+                text = formatTimestamp(message.timestamp),
                 style = MaterialTheme.typography.labelMedium,
             )
         }

@@ -2,14 +2,13 @@ package com.example.mqttclient.domain
 
 import com.example.mqttclient.data.api.MqttApiMessage
 import com.hivemq.client.mqtt.datatypes.MqttQos
-import java.sql.Timestamp
 
 data class MqttMessage(
     val topic: String,
     val payload: String,
     val retain: Boolean = false,
     val qos: Int = 0,
-    val timestamp: Timestamp = Timestamp(System.currentTimeMillis()),
+    val timestamp: Long = System.currentTimeMillis(),
 )
 
 fun MqttApiMessage.toMqttMessage() = MqttMessage(
