@@ -1,6 +1,7 @@
 package com.example.mqttclient.data.api
 
 import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator
 import java.util.UUID
@@ -73,6 +74,18 @@ class MqttApiClient(
                     .keepAlive(10)
                     .send()
 
+                // A single global handler routes every incoming message, so a
+                // message matching several subscriptions is delivered only once.
+                client.toAsync().publishes(MqttGlobalPublishFilter.ALL) {
+                    val msg = MqttApiMessage(
+                        topic = it.topic.toString(),
+                        payload = it.payloadAsBytes.toString(Charsets.UTF_8),
+                        retain = it.isRetain,
+                        qos = it.qos,
+                    )
+                    onMessageReceiveListener?.invoke(msg)
+                }
+
                 isConnecting = false
                 isConnected = true
             }
@@ -107,15 +120,6 @@ class MqttApiClient(
 
         client.toAsync().subscribeWith()
             .topicFilter(topic)
-            .callback {
-                val msg = MqttApiMessage(
-                    topic = it.topic.toString(),
-                    payload = it.payloadAsBytes.toString(Charsets.UTF_8),
-                    retain = it.isRetain,
-                    qos = it.qos
-                )
-                onMessageReceiveListener?.invoke(msg)
-            }
             .send()
     }
 
