@@ -1,12 +1,16 @@
 package com.example.mqttclient.ui.main.publish_message
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mqttclient.domain.MqttClient
 import com.example.mqttclient.domain.MqttMessage
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class PublishMessageUiState(
     val topic: String = "testtopic",
@@ -16,7 +20,10 @@ data class PublishMessageUiState(
     val isInputValid: Boolean = false,
 )
 
-class PublishMessageViewModel(private val mqtt: MqttClient) : ViewModel() {
+class PublishMessageViewModel(
+    private val mqtt: MqttClient,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PublishMessageUiState().withValidation())
     val uiState: StateFlow<PublishMessageUiState> = _uiState.asStateFlow()
@@ -41,7 +48,9 @@ class PublishMessageViewModel(private val mqtt: MqttClient) : ViewModel() {
             retain = state.retain,
             qos = state.qos.toIntOrNull() ?: 0,
         )
-        mqtt.publish(msg)
+        viewModelScope.launch(ioDispatcher) {
+            mqtt.publish(msg)
+        }
     }
 }
 
