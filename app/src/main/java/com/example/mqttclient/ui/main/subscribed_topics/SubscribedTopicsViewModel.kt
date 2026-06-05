@@ -39,8 +39,7 @@ class SubscribedTopicsViewModel(
             initialValue = SubscribedTopicsUiState(),
         )
 
-    private fun validateTopicName(topicName: String) =
-        topicName.isNotEmpty() && !topicName[0].isDigit()
+    private fun validateTopicName(topicName: String) = topicName.isNotBlank()
 
     fun onNewTopicNameChange(value: String) {
         newTopicName.value = value
